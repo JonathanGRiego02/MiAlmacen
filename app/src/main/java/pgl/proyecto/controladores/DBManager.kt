@@ -76,4 +76,15 @@ class DBManager(context: Context) :
         db.execSQL("DROP TABLE IF EXISTS $TABLE_USUARIOS")
         onCreate(db)
     }
+
+    // Comprobar los datos en el login
+    fun checkUserCredentials(email: String, password: String): Boolean {
+        val db = this.readableDatabase
+        val query = "SELECT * FROM $TABLE_USUARIOS WHERE $COLUMN_EMAIL_USUARIO = ? AND $COLUMN_PASSWORD_USUARIO = ?"
+        val cursor = db.rawQuery(query, arrayOf(email, password))
+        val isValid = cursor.count > 0
+        cursor.close()
+        db.close()
+        return isValid
+    }
 }
