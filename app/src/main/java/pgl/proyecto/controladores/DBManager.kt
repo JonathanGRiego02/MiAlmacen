@@ -87,4 +87,21 @@ class DBManager(context: Context) :
         db.close()
         return isValid
     }
+
+    // Añadir un usuario a la base de datos
+    fun addUser(nombre: String, email: String, password: String): Boolean {
+        val db = this.writableDatabase
+        val query = "SELECT * FROM $TABLE_USUARIOS WHERE $COLUMN_EMAIL_USUARIO = ?"
+        val cursor = db.rawQuery(query, arrayOf(email))
+        if (cursor.count > 0) {
+            cursor.close()
+            db.close()
+            return false
+        }
+        val newUser = "INSERT INTO $TABLE_USUARIOS ($COLUMN_NAME_USUARIO, $COLUMN_EMAIL_USUARIO, $COLUMN_PASSWORD_USUARIO) VALUES ('$nombre', '$email', '$password')"
+        db.execSQL(newUser)
+        cursor.close()
+        db.close()
+        return true
+    }
 }
