@@ -1,8 +1,12 @@
 package pgl.proyecto.controladores
 
+import android.annotation.SuppressLint
+import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import pgl.proyecto.actividades.modelos.Almacen
+import pgl.proyecto.actividades.modelos.Objeto
 
 class DBManager(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -104,4 +108,74 @@ class DBManager(context: Context) :
         db.close()
         return true
     }
+
+    // Función para obtener el array de Almacenes
+    @SuppressLint("Range") // El android studio me sugería esto para que el rango no fuera -1
+    fun getAlmacenes(): ArrayList<Almacen> {
+        val almacenes = ArrayList<Almacen>()
+        val db = this.readableDatabase
+        val query = "SELECT * FROM $TABLE_ALMACEN"
+        val cursor = db.rawQuery(query, null)
+        if (cursor.moveToFirst()) {
+            do {
+                val idAlmacen = cursor.getInt(cursor.getColumnIndex(COLUMN_ID_ALMACEN))
+                val nombre = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_ALMACEN))
+                val direccion = cursor.getString(cursor.getColumnIndex(COLUMN_DIRECCION_ALMACEN))
+                almacenes.add(Almacen(idAlmacen, nombre, direccion))
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        db.close()
+        return almacenes
+    }
+
+    // Función para obtener el array de Objetos
+    @SuppressLint("Range")
+    fun getObjetosByAlmacen(idAlmacen: Int): List<Objeto> {
+        val objetos = ArrayList<Objeto>()
+        val db = this.readableDatabase
+        val query = "SELECT * FROM $TABLE_STOCK WHERE $COLUMN_ID_ALMACEN_FK = ?"
+        val cursor = db.rawQuery(query, arrayOf(idAlmacen.toString()))
+        if (cursor.moveToFirst()) {
+            do {
+                val idObjeto = cursor.getInt(cursor.getColumnIndex(COLUMN_ID_OBJETO))
+                val nombre = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_OBJETO))
+                val peso = cursor.getDouble(cursor.getColumnIndex(COLUMN_PESO_OBJETO))
+                val ancho = cursor.getDouble(cursor.getColumnIndex(COLUMN_ANCHO_OBJETO))
+                val largo = cursor.getDouble(cursor.getColumnIndex(COLUMN_LARGO_OBJETO))
+                val idAlmacenFk = cursor.getInt(cursor.getColumnIndex(COLUMN_ID_ALMACEN_FK))
+                objetos.add(Objeto(idObjeto, nombre, peso, ancho, largo, idAlmacenFk))
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        db.close()
+        return objetos
+    }
+
+    // Añadir un objeto a la base de datos
+    fun addObjeto(objeto: Objeto): Boolean {
+        val db = this.writableDatabase
+        val contentValues = ContentValues().apply {
+            put(COLUMN_NAME_OBJETO, objeto.nombre)
+            put(COLUMN_PESO_OBJETO, objeto.peso)
+            put(COLUMN_ANCHO_OBJETO, objeto.ancho)
+            put(COLUMN_LARGO_OBJETO, objeto.largo)
+            put(COLUMN_ID_ALMACEN_FK, objeto.idAlmacen)
+        }
+        val result = db.insert(TABLE_STOCK, null, contentValues)
+        db.close()
+        return result != -1L
+    }
+
+    fun addAlmacen(almacen: Almacen): Boolean {
+        val db = this.writableDatabase
+        val contentValues = ContentValues().apply {
+            put(COLUMN_NAME_ALMACEN, almacen.nombre)
+            put(COLUMN_DIRECCION_ALMACEN, almacen.direccion)
+        }
+        val result = db.insert(TABLE_ALMACEN, null, contentValues)
+        db.close()
+        return result != -1L
+    }
+
 }

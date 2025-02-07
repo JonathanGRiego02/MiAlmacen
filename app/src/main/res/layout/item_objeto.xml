@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/text_nombre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nombre_objeto"
+            android:textStyle="bold"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/text_peso"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/peso_objeto" />
+
+        <TextView
+            android:id="@+id/text_ancho"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ancho_objeto" />
+
+        <TextView
+            android:id="@+id/text_largo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/largo_objeto" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

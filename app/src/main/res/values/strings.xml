@@ -13,9 +13,16 @@
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Ajustes</string>
 
-    <string name="menu_home">Home</string>
+    <string name="menu_home">Menu principal</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+    <string name="nombre_objeto">Nombre</string>
+    <string name="peso_objeto">Peso(kg)</string>
+    <string name="ancho_objeto">Ancho(m)</string>
+    <string name="largo_objeto">Largo(m)</string>
+    <string name="add_almacen">Añadir almacén</string>
+    <string name="notas">Notas</string>
+    <string name="direccion_almacen">Dirección</string>
 </resources>

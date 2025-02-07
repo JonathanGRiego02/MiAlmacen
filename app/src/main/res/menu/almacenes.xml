@@ -6,4 +6,16 @@
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_addAlmacen"
+        android:orderInCategory="1"
+        android:title="@string/add_almacen"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_notas"
+        android:orderInCategory="2"
+        android:title="@string/notas"
+        app:showAsAction="never" />
 </menu>

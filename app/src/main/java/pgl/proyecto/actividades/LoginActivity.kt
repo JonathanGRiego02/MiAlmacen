@@ -16,6 +16,7 @@ import pgl.proyecto.databinding.RegisterDialogBinding
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
+    private val dbManager = DBManager(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,26 +50,62 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun showRegisterDialog() {
-        val dialogBinding = RegisterDialogBinding.inflate(LayoutInflater.from(this))
+        val dialogBinding = RegisterDialogBinding.inflate(layoutInflater)
+        val nombreEditText = dialogBinding.nombreEditText
+        val emailEditText = dialogBinding.emailEditText
+        val passwdEditText = dialogBinding.passwdEditText
+        val nombreLayout = dialogBinding.nombreTextInputLayout
+        val emailLayout = dialogBinding.emailTextInputLayout
+        val passwdLayout = dialogBinding.passwdTextInputLayout
 
-        val dialog = AlertDialog.Builder(this)
-            .setTitle("Registrarse en la aplicación")
+        AlertDialog.Builder(this)
+            .setTitle("Registrarse")
             .setView(dialogBinding.root)
-            .setPositiveButton("Registrar") { _, _ ->
-                val nombre = dialogBinding.nombreEditText.text.toString()
-                val email = dialogBinding.emailEditText.text.toString()
-                val password = dialogBinding.passwdEditText.text.toString()
-                val dbManager = DBManager(this)
-                if (nombre.isNotBlank() && email.isNotBlank() && password.isNotBlank()) {
-                    Toast.makeText(this, "Usuario registrado: $nombre", Toast.LENGTH_SHORT).show()
-                    dbManager.addUser(nombre, email, password)
+            .setPositiveButton("Registrar") { dialog, _ ->
+                val nombre = nombreEditText.text.toString()
+                val email = emailEditText.text.toString()
+                val password = passwdEditText.text.toString()
+
+                var isValid = true
+
+                if (nombre.isEmpty()) {
+                    nombreLayout.error = "El nombre es obligatorio"
+                    isValid = false
                 } else {
-                    Toast.makeText(this, "Todos los campos son obligatorios", Toast.LENGTH_SHORT).show()
+                    nombreLayout.error = null
+                }
+
+                if (email.isEmpty()) {
+                    emailLayout.error = "El email es obligatorio"
+                    isValid = false
+                } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    emailLayout.error = "Formato de email inválido"
+                    isValid = false
+                } else {
+                    emailLayout.error = null
+                }
+
+                if (password.isEmpty()) {
+                    passwdLayout.error = "La contraseña es obligatoria"
+                    isValid = false
+                } else {
+                    passwdLayout.error = null
+                }
+
+                if (isValid) {
+                    val success = dbManager.addUser(nombre, email, password)
+                    if (success) {
+                        Toast.makeText(this, "Registro exitoso", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this, "Error en el registro", Toast.LENGTH_SHORT).show()
+                    }
+                    dialog.dismiss()
                 }
             }
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton("Cancelar") { dialog, _ ->
+                dialog.dismiss()
+            }
             .create()
-
-        dialog.show()
+            .show()
     }
 }
