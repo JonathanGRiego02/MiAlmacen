@@ -6,9 +6,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import android.content.Intent
+import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import pgl.proyecto.controladores.DBManager
 import pgl.proyecto.databinding.ActivityLoginBinding
 import pgl.proyecto.databinding.RegisterDialogBinding
@@ -58,54 +63,88 @@ class LoginActivity : AppCompatActivity() {
         val emailLayout = dialogBinding.emailTextInputLayout
         val passwdLayout = dialogBinding.passwdTextInputLayout
 
-        AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this)
             .setTitle("Registrarse")
             .setView(dialogBinding.root)
-            .setPositiveButton("Registrar") { dialog, _ ->
-                val nombre = nombreEditText.text.toString()
-                val email = emailEditText.text.toString()
-                val password = passwdEditText.text.toString()
-
-                var isValid = true
-
-                if (nombre.isEmpty()) {
-                    nombreLayout.error = "El nombre es obligatorio"
-                    isValid = false
-                } else {
-                    nombreLayout.error = null
-                }
-
-                if (email.isEmpty()) {
-                    emailLayout.error = "El email es obligatorio"
-                    isValid = false
-                } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    emailLayout.error = "Formato de email inválido"
-                    isValid = false
-                } else {
-                    emailLayout.error = null
-                }
-
-                if (password.isEmpty()) {
-                    passwdLayout.error = "La contraseña es obligatoria"
-                    isValid = false
-                } else {
-                    passwdLayout.error = null
-                }
-
-                if (isValid) {
-                    val success = dbManager.addUser(nombre, email, password)
-                    if (success) {
-                        Toast.makeText(this, "Registro exitoso", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(this, "Error en el registro", Toast.LENGTH_SHORT).show()
-                    }
-                    dialog.dismiss()
-                }
-            }
-            .setNegativeButton("Cancelar") { dialog, _ ->
-                dialog.dismiss()
-            }
+            .setPositiveButton("Registrar", null) // Set the positive button
+            .setNegativeButton("Cancelar") { d, _ -> d.dismiss() }
             .create()
-            .show()
+
+        dialog.show()
+
+        // Set the click listener for the positive button
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setOnClickListener {
+            val isValid = validateFields(
+                nombreEditText,
+                emailEditText,
+                passwdEditText,
+                nombreLayout,
+                emailLayout,
+                passwdLayout
+            )
+
+            if (isValid) {
+                val success = dbManager.addUser(
+                    nombreEditText.text.toString().trim(),
+                    emailEditText.text.toString().trim(),
+                    passwdEditText.text.toString().trim()
+                )
+                if (success) {
+                    Toast.makeText(this, "Registro exitoso", Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
+                } else {
+                    Toast.makeText(this, "Error en el registro", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
+
+    private fun validateFields(
+        nombreEditText: TextInputEditText,
+        emailEditText: TextInputEditText,
+        passwdEditText: TextInputEditText,
+        nombreLayout: TextInputLayout,
+        emailLayout: TextInputLayout,
+        passwdLayout: TextInputLayout
+    ): Boolean {
+        val nombre = nombreEditText.text.toString().trim()
+        val email = emailEditText.text.toString().trim()
+        val password = passwdEditText.text.toString().trim()
+
+        var isValid = true
+
+        Log.d("debuggin", "Esto se está ejecutando")
+
+        if (TextUtils.isEmpty(nombre)) {
+            nombreLayout.error = "El nombre es obligatorio"
+            isValid = false
+        } else {
+            nombreLayout.error = null
+        }
+
+        if (TextUtils.isEmpty(email)) {
+            emailLayout.error = "El email es obligatorio"
+            isValid = false
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailLayout.error = "Formato de email inválido"
+            isValid = false
+        } else {
+            emailLayout.error = null
+        }
+
+        if (TextUtils.isEmpty(password)) {
+            passwdLayout.error = "La contraseña es obligatoria"
+            isValid = false
+        } else {
+            passwdLayout.error = null
+        }
+
+        return isValid
+    }
+
+
 }
+
+
+
+

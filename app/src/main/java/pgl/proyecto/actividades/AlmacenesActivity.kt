@@ -1,16 +1,20 @@
 package pgl.proyecto.actividades
 
 import android.os.Bundle
-import android.view.Menu
+import android.text.TextUtils
+import android.view.*
+import android.widget.PopupMenu
 import androidx.appcompat.app.AlertDialog
-import com.google.android.material.navigation.NavigationView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.navigation.NavigationView
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import pgl.proyecto.R
 import pgl.proyecto.actividades.modelos.Almacen
 import pgl.proyecto.controladores.DBManager
@@ -84,26 +88,66 @@ class AlmacenesActivity : AppCompatActivity() {
         val dialogBinding = AddAlmacenDialogBinding.inflate(layoutInflater)
         val nombreEditText = dialogBinding.nombreEditText
         val direccionEditText = dialogBinding.direccionEditText
+        val nombreLayout = dialogBinding.nombreTextInputLayout
+        val direccionLayout = dialogBinding.direccionTextInputLayout
 
-        AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this)
             .setTitle("Agregar Almacén")
             .setView(dialogBinding.root)
-            .setPositiveButton("Agregar") { dialog, _ ->
-                val nombre = nombreEditText.text.toString()
-                val direccion = direccionEditText.text.toString()
-
-                if (nombre.isNotEmpty() && direccion.isNotEmpty()) {
-                    val newAlmacen = Almacen(0, nombre, direccion)
-                    dbManager.addAlmacen(newAlmacen)
-                    updateNavigationView()
-                }
-                dialog.dismiss()
-            }
-            .setNegativeButton("Cancelar") { dialog, _ ->
-                dialog.dismiss()
-            }
+            .setPositiveButton("Agregar", null) // Set the positive button
+            .setNegativeButton("Cancelar") { d, _ -> d.dismiss() }
             .create()
-            .show()
+
+        dialog.show()
+
+        // Set the click listener for the positive button
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setOnClickListener {
+            val isValid = validateAlmacenFields(
+                nombreEditText,
+                direccionEditText,
+                nombreLayout,
+                direccionLayout
+            )
+
+            if (isValid) {
+                val newAlmacen = Almacen(
+                    0,
+                    nombreEditText.text.toString().trim(),
+                    direccionEditText.text.toString().trim()
+                )
+                dbManager.addAlmacen(newAlmacen)
+                updateNavigationView()
+                dialog.dismiss()
+            }
+        }
+    }
+
+    private fun validateAlmacenFields(
+        nombreEditText: TextInputEditText,
+        direccionEditText: TextInputEditText,
+        nombreLayout: TextInputLayout,
+        direccionLayout: TextInputLayout
+    ): Boolean {
+        val nombre = nombreEditText.text.toString().trim()
+        val direccion = direccionEditText.text.toString().trim()
+
+        var isValid = true
+
+        if (TextUtils.isEmpty(nombre)) {
+            nombreLayout.error = "El nombre es obligatorio"
+            isValid = false
+        } else {
+            nombreLayout.error = null
+        }
+
+        if (TextUtils.isEmpty(direccion)) {
+            direccionLayout.error = "La dirección es obligatoria"
+            isValid = false
+        } else {
+            direccionLayout.error = null
+        }
+
+        return isValid
     }
 
     private fun updateNavigationView() {
@@ -118,12 +162,11 @@ class AlmacenesActivity : AppCompatActivity() {
             val menuItem = menu.add(R.id.group_almacenes, Menu.NONE, Menu.NONE, almacen.nombre)
             menuItem.setIcon(R.drawable.ic_almacen)
             menuItem.setOnMenuItemClickListener {
-                val bundle = Bundle()
-                bundle.putInt("idAlmacen", almacen.idAlmacen)
-                navController.navigate(R.id.nav_almacen_objetos, bundle)
                 drawerLayout.closeDrawers()
                 true
             }
+
         }
     }
+
 }

@@ -167,6 +167,13 @@ class DBManager(context: Context) :
         return result != -1L
     }
 
+    fun deleteObjeto(idObjeto: Int): Boolean {
+        val db = this.writableDatabase
+        val result = db.delete(TABLE_STOCK, "$COLUMN_ID_OBJETO = ?", arrayOf(idObjeto.toString()))
+        db.close()
+        return result > 0
+    }
+
     fun addAlmacen(almacen: Almacen): Boolean {
         val db = this.writableDatabase
         val contentValues = ContentValues().apply {
@@ -177,5 +184,14 @@ class DBManager(context: Context) :
         db.close()
         return result != -1L
     }
+
+    fun deleteAlmacen(idAlmacen: Int): Boolean {
+        val db = this.writableDatabase
+        val result = db.delete(TABLE_ALMACEN, "$COLUMN_ID_ALMACEN = ?", arrayOf(idAlmacen.toString()))
+        db.close()
+        return result > 0
+    }
+
+
 
 }
