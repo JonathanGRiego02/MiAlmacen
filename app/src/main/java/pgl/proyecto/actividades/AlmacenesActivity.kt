@@ -96,6 +96,33 @@ class AlmacenesActivity : AppCompatActivity() {
         editButton.setOnClickListener {
             showEditAlmacenesDialog()
         }
+
+        val aboutButton: Button = findViewById(R.id.aboutButton)
+        aboutButton.setOnClickListener {
+            showAboutDialog()
+        }
+
+        val logoutButton: Button = findViewById(R.id.logoutButton)
+        logoutButton.setOnClickListener {
+            logout()
+        }
+
+
+    }
+
+    private fun showAboutDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Información de la app")
+            .setMessage("App Version: 1.0\nDevelopers: Jonathan Gutiérrez Riego \nAplicación para la gestión de almacenes")
+            .setPositiveButton("OK", null)
+            .show()
+    }
+
+    private fun logout() {
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
     }
 
     private fun showEditAlmacenesDialog() {

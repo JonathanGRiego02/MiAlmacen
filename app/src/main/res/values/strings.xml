@@ -27,4 +27,6 @@
     <string name="direccion_almacen">Dirección</string>
     <string name="broadcast_receiver">Activar Broadcast Receiver</string>
     <string name="editar_almacenes">Editar</string>
+    <string name="info_app">Info</string>
+    <string name="logout">Cerrar sesión</string>
 </resources>
