@@ -25,4 +25,6 @@
     <string name="add_almacen">Añadir almacén</string>
     <string name="notas">Notas</string>
     <string name="direccion_almacen">Dirección</string>
+    <string name="broadcast_receiver">Activar Broadcast Receiver</string>
+    <string name="editar_almacenes">Editar</string>
 </resources>

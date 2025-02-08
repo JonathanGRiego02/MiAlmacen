@@ -42,8 +42,8 @@ class AlmacenObjetosFragment : Fragment() {
         }
 
         // Configure the RecyclerView
-        adapter = ObjetoAdapter(objetos) { objeto ->
-            showDeleteMenu(objeto)
+        adapter = ObjetoAdapter(objetos) { view, objeto ->
+            showDeleteMenu(view, objeto)
         }
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
@@ -51,8 +51,8 @@ class AlmacenObjetosFragment : Fragment() {
         return root
     }
 
-    private fun showDeleteMenu(objeto: Objeto) {
-        val popupMenu = PopupMenu(requireContext(), binding.recyclerView)
+    private fun showDeleteMenu(view: View, objeto: Objeto) {
+        val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.menuInflater.inflate(R.menu.context_menu, popupMenu.menu)
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
@@ -70,8 +70,8 @@ class AlmacenObjetosFragment : Fragment() {
     fun updateRecyclerView() {
         val idAlmacen = arguments?.getInt("idAlmacen") ?: return
         objetos = dbManager.getObjetosByAlmacen(idAlmacen)
-        adapter = ObjetoAdapter(objetos) { objeto ->
-            showDeleteMenu(objeto)
+        adapter = ObjetoAdapter(objetos) { view, objeto ->
+            showDeleteMenu(view, objeto)
         }
         binding.recyclerView.adapter = adapter
 
@@ -84,6 +84,8 @@ class AlmacenObjetosFragment : Fragment() {
             binding.recyclerView.visibility = View.VISIBLE
         }
     }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

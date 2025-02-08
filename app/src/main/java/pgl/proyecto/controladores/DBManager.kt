@@ -192,6 +192,20 @@ class DBManager(context: Context) :
         return result > 0
     }
 
+    @SuppressLint("Range")
+    fun getUserNameByEmail(email: String): String? {
+        val db = this.readableDatabase
+        val query = "SELECT $COLUMN_NAME_USUARIO FROM $TABLE_USUARIOS WHERE $COLUMN_EMAIL_USUARIO = ?"
+        val cursor = db.rawQuery(query, arrayOf(email))
+        var userName: String? = null
+        if (cursor.moveToFirst()) {
+            userName = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_USUARIO))
+        }
+        cursor.close()
+        db.close()
+        return userName
+    }
+
 
 
 }

@@ -41,7 +41,9 @@ class LoginActivity : AppCompatActivity() {
             val dbManager = DBManager(this)
 
             if (dbManager.checkUserCredentials(email, password)) {
+                val userName = dbManager.getUserNameByEmail(email) // Assuming this method exists
                 val intent = Intent(this, AlmacenesActivity::class.java)
+                intent.putExtra("userName", userName)
                 startActivity(intent)
                 finish()
             } else {

@@ -17,7 +17,6 @@
             android:id="@+id/text_nombre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/nombre_objeto"
             android:textStyle="bold"
             android:textSize="18sp" />
 
@@ -25,18 +24,18 @@
             android:id="@+id/text_peso"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/peso_objeto" />
+            android:text="Peso: " />
 
         <TextView
             android:id="@+id/text_ancho"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/ancho_objeto" />
+            android:text="Ancho: " />
 
         <TextView
             android:id="@+id/text_largo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/largo_objeto" />
+            android:text="Largo: " />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
